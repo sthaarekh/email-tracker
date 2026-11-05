@@ -16,7 +16,7 @@ const openEventSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 openEventSchema.index({ trackedEmail: 1, openedAt: -1 });

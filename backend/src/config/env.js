@@ -11,6 +11,12 @@ const envSchema = z.object({
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
 
   CORS_ORIGINS: z.string().default(""),
+
+  JWT_ACCESS_SECRET: z.string().min(32),
+
+  JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
+
+  REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().int().positive().default(7),
 });
 
 const result = envSchema.safeParse(process.env);

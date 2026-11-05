@@ -7,6 +7,7 @@ import { env, allowedOrigins } from "./config/env.js";
 import healthRoutes from "./routes/health.routes.js";
 import notFound from "./middleware/not-found.middleware.js";
 import errorHandler from "./middleware/error.middleware.js";
+import authRoutes from "./routes/auth.route.js";
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(
       return callback(error);
     },
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json({ limit: "10kb" }));
@@ -37,6 +38,7 @@ if (env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
 }
 
+app.use("/api/auth", authRoutes);
 app.use("/api/health", healthRoutes);
 
 app.use(notFound);

@@ -54,7 +54,7 @@ const trackedEmailSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 trackedEmailSchema.index({ user: 1, createdAt: -1 });
