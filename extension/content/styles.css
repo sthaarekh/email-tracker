@@ -1,0 +1,36 @@
+.et-tracking-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-right: 10px;
+  padding: 8px 14px;
+  border: 1px solid #dadce0;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #444746;
+  font-family:
+    Google Sans,
+    Arial,
+    sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.et-tracking-button:hover {
+  background: #f1f3f4;
+  border-color: #9aa0a6;
+}
+
+.et-tracking-button.et-active {
+  background: #e6f4ea;
+  color: #137333;
+  border-color: #34a853;
+}
+
+.et-tracking-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
