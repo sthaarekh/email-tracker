@@ -1,7 +1,15 @@
 import { env } from "../config/env.js";
 
 const errorHandler = (error, _req, res, _next) => {
-  const statusCode = error.statusCode || error.status || 500;
+  let statusCode = error.statusCode || error.status || 500;
+
+  if (error.code === 11000) {
+    statusCode = 409;
+  }
+
+  if (error.name === "ValidationError") {
+    statusCode = 400;
+  }
 
   if (statusCode >= 500) {
     console.error(error);
