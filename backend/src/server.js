@@ -1,28 +1,39 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-import dotenv from "dotenv";
+import mongoose from "mongoose";
 
-dotenv.config();
+import app from "./app.js";
+import { env } from "./config/env.js";
+import { connectDatabase } from "./config/database.js";
 
-const app = express();
+const startServer = async () => {
+  try {
+    await connectDatabase();
 
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(morgan("dev"));
+    const server = app.listen(env.PORT, () => {
+      console.log(`Server running on http://localhost:${env.PORT}`);
+      console.log(`Environment: ${env.NODE_ENV}`);
+    });
 
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Email Tracker API is running",
-    timestamp: new Date().toISOString(),
-  });
-});
+    const shutdown = (signal) => {
+      console.log(`${signal} received. Shutting down gracefully...`);
 
-const PORT = process.env.PORT || 5000;
+      server.close(async () => {
+        try {
+          await mongoose.disconnect();
+          console.log("MongoDB disconnected.");
+          process.exit(0);
+        } catch (error) {
+          console.error("Shutdown failed:", error);
+          process.exit(1);
+        }
+      });
+    };
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+    process.once("SIGINT", () => shutdown("SIGINT"));
+    process.once("SIGTERM", () => shutdown("SIGTERM"));
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
