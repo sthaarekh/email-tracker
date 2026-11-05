@@ -13,6 +13,18 @@ const openEventSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+
+    userAgent: {
+      type: String,
+      maxlength: 512,
+      default: null,
+    },
+
+    classification: {
+      type: String,
+      enum: ["unclassified", "possible_proxy", "possible_scanner"],
+      default: "unclassified",
+    },
   },
   {
     timestamps: true,

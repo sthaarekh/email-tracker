@@ -8,6 +8,8 @@ import healthRoutes from "./routes/health.routes.js";
 import notFound from "./middleware/not-found.middleware.js";
 import errorHandler from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
+import trackingRoutes from "./routes/tracking.routes.js";
+import pixelRoutes from "./routes/pixel.routes.js";
 
 const app = express();
 
@@ -40,6 +42,8 @@ if (env.NODE_ENV !== "test") {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/health", healthRoutes);
+app.use("/api/tracking", trackingRoutes);
+app.use("/t", pixelRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

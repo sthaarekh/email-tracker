@@ -30,6 +30,11 @@ const trackedEmailSchema = new mongoose.Schema(
       default: "",
     },
 
+    gmailThreadId: {
+      type: String,
+      default: null,
+    },
+
     status: {
       type: String,
       enum: ["draft", "sent"],
