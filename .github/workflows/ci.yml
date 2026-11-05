@@ -25,27 +25,17 @@ jobs:
         working-directory: backend
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check formatting
-        run: npm run format:check --if-present
-
-      - name: Run ESLint
-        run: npm run lint --if-present
-
-      - name: Run tests
-        run: npm test --if-present
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
 
   extension:
     name: Extension CI
@@ -56,27 +46,15 @@ jobs:
         working-directory: extension
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: extension/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Validate manifest
-        run: node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('Manifest is valid')"
-
-      - name: Check formatting
-        run: npm run format:check --if-present
-
-      - name: Run ESLint
-        run: npm run lint --if-present
-
-      - name: Run tests
-        run: npm test --if-present
+      - run: npm ci
+      - run: node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
+      - run: npm run format:check
+      - run: npm run lint

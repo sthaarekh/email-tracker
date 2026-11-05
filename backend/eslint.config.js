@@ -10,8 +10,8 @@ export default [
       globals: {
         ...globals.node,
         ...globals.browser,
-        chrome: "readonly"
-      }
+        chrome: "readonly",
+      },
     },
 
     rules: {
@@ -19,7 +19,7 @@ export default [
       "no-undef": "error",
       "no-console": "off",
       eqeqeq: "error",
-      curly: "error"
-    }
-  }
+      curly: "error",
+    },
+  },
 ];
