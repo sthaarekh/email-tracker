@@ -1,0 +1,22 @@
+{
+  "name": "email-tracker-extension",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension for tracking outgoing emails",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.10"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9"
+  }
+}

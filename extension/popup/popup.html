@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Tracker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+    <main class="container">
+      <header>
+        <div class="brand">
+          <div class="brand-icon">E</div>
+          <div>
+            <h1>Email Tracker</h1>
+            <p>Know when your emails are opened.</p>
+          </div>
+        </div>
+      </header>
+
+      <section id="login-section">
+        <h2>Welcome back</h2>
+        <p class="description">Sign in to your account.</p>
+
+        <form id="login-form">
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+          />
+
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Your password"
+            required
+          />
+
+          <button id="login-button" type="submit">Sign in</button>
+        </form>
+      </section>
+
+      <section id="dashboard-section" hidden>
+        <div class="account-card">
+          <span class="status-dot"></span>
+          <div>
+            <h2>You're connected</h2>
+            <p id="user-email"></p>
+          </div>
+        </div>
+
+        <button id="logout-button" class="secondary">Sign out</button>
+      </section>
+
+      <p id="status-message" role="status"></p>
+
+      <footer>
+        <span>EMAIL TRACKER</span>
+        <span>v1.0.0</span>
+      </footer>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
