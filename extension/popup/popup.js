@@ -7,9 +7,7 @@ const logoutButton = document.getElementById("logout-button");
 const refreshButton = document.getElementById("refresh-button");
 
 const statusMessage = document.getElementById("status-message");
-
-const activityList = document.getElementById("activity-list");
-const emptyState = document.getElementById("empty-state");
+const emailList = document.getElementById("email-list");
 
 function sendMessage(message) {
   return new Promise((resolve, reject) => {
@@ -36,47 +34,42 @@ function formatDate(date) {
   }).format(new Date(date));
 }
 
-function createActivityItem(item) {
+function createEmailItem(email) {
   const container = document.createElement("article");
   container.className = "activity-item";
 
   const icon = document.createElement("div");
   icon.className = "activity-icon";
-  icon.textContent = "↗";
+  icon.textContent = email.openCount > 0 ? "✓✓" : "✓";
 
   const content = document.createElement("div");
   content.className = "activity-content";
 
   const subject = document.createElement("strong");
-  subject.textContent = item.email?.subject || "(No subject)";
+  subject.textContent = email.subject || "(No subject)";
 
-  const timestamp = document.createElement("span");
-  timestamp.textContent = formatDate(item.openedAt);
+  const to = document.createElement("span");
+  to.textContent = `To: ${email.recipientEmail}`;
 
-  const classification = document.createElement("span");
-  classification.className = "activity-classification";
-  classification.textContent =
-    item.classification === "unclassified"
-      ? "Image request recorded"
-      : item.classification.replaceAll("_", " ");
+  const status = document.createElement("span");
+  status.textContent =
+    email.openCount > 0
+      ? `Opened ${email.openCount}× · last ${formatDate(email.lastOpenedAt)}`
+      : `Not opened · sent ${formatDate(email.sentAt)}`;
 
-  content.append(subject, timestamp, classification);
+  content.append(subject, to, status);
   container.append(icon, content);
-
   return container;
 }
 
 async function loadDashboard() {
   refreshButton.disabled = true;
   statusMessage.textContent = "";
-  try {
-    const result = await sendMessage({
-      type: "GET_TRACKING_ACTIVITY",
-    });
 
-    // Fallback to empty objects/arrays if properties are missing
-    const summary = result?.summary || {};
-    const activity = result?.activity || [];
+  try {
+    const result = await sendMessage({ type: "GET_TRACKING_ACTIVITY" });
+
+    const { summary = {}, emails = [] } = result?.data || {};
 
     document.getElementById("total-tracked").textContent =
       summary.totalTracked ?? 0;
@@ -85,16 +78,11 @@ async function loadDashboard() {
     document.getElementById("total-opens").textContent =
       summary.totalOpens ?? 0;
 
-    activityList.replaceChildren();
-
-    if (!activity.length) {
-      emptyState.hidden = false;
+    // Tracked emails
+    if (emailList) {
+      emailList.replaceChildren(...emails.map(createEmailItem));
     } else {
-      emptyState.hidden = true;
-
-      activity.forEach((item) => {
-        activityList.appendChild(createActivityItem(item));
-      });
+      console.warn("Email Tracker: #email-list not found in popup.html");
     }
   } catch (error) {
     statusMessage.textContent = error.message;
