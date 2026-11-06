@@ -9,6 +9,8 @@ import {
   getTrackedEmails,
   getTrackingEvents,
   trackingPixel,
+  getTrackingActivity,
+  linkGmailThread,
 } from "../controllers/tracking.controller.js";
 
 const router = Router();
@@ -24,5 +26,9 @@ router.patch("/emails/:id/sent", authenticate, asyncHandler(markEmailSent));
 router.get("/emails", authenticate, asyncHandler(getTrackedEmails));
 
 router.get("/emails/:id/events", authenticate, asyncHandler(getTrackingEvents));
+
+router.get("/activity", authenticate, asyncHandler(getTrackingActivity));
+
+router.patch("/emails/:id/thread", authenticate, asyncHandler(linkGmailThread));
 
 export default router;

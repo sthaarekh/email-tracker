@@ -12,7 +12,12 @@
   "content_scripts": [
     {
       "matches": ["https://mail.google.com/*"],
-      "js": ["content/gmail.js", "content/compose.js", "content/content.js"],
+      "js": [
+        "content/gmail.js",
+        "content/compose.js",
+        "content/inbox.js",
+        "content/content.js"
+      ],
       "css": ["content/styles.css"],
       "run_at": "document_idle"
     }
