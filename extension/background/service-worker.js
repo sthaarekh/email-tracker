@@ -58,11 +58,9 @@ async function refreshAccessToken() {
 
 async function apiRequest(path, options = {}, retry = true) {
   const tokens = await getTokens();
-
   if (!tokens.accessToken) {
     throw new Error("Please log in to Email Tracker.");
   }
-
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
@@ -89,7 +87,6 @@ async function apiRequest(path, options = {}, retry = true) {
   }
 
   const result = await response.json().catch(() => ({}));
-
   if (!response.ok) {
     throw new Error(result.message || "API request failed.");
   }
@@ -169,6 +166,20 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
       case "GET_TRACKED_EMAILS":
         return await apiRequest("/tracking/emails");
+
+      case "GET_TRACKING_ACTIVITY":
+        return await apiRequest("/tracking/activity");
+
+      case "LINK_GMAIL_THREAD":
+        return await apiRequest(
+          `/tracking/emails/${encodeURIComponent(message.id)}/thread`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              gmailThreadId: message.gmailThreadId,
+            }),
+          }
+        );
 
       default:
         throw new Error("Unknown extension message.");

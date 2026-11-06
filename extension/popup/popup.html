@@ -3,20 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Email Tracker</title>
+
     <link rel="stylesheet" href="popup.css" />
   </head>
 
   <body>
     <main class="container">
-      <header>
+      <header class="header">
         <div class="brand">
           <div class="brand-icon">E</div>
           <div>
             <h1>Email Tracker</h1>
-            <p>Know when your emails are opened.</p>
+            <p>Your email activity</p>
           </div>
         </div>
+
+        <button id="refresh-button" class="icon-button" title="Refresh">
+          ↻
+        </button>
       </header>
 
       <section id="login-section">
@@ -25,35 +31,54 @@
 
         <form id="login-form">
           <label for="email">Email address</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            required
-          />
+          <input id="email" type="email" required />
 
           <label for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Your password"
-            required
-          />
+          <input id="password" type="password" required />
 
           <button id="login-button" type="submit">Sign in</button>
         </form>
       </section>
 
       <section id="dashboard-section" hidden>
-        <div class="account-card">
-          <span class="status-dot"></span>
+        <div class="account-row">
           <div>
-            <h2>You're connected</h2>
-            <p id="user-email"></p>
+            <span class="online-dot"></span>
+            <span id="user-email">Connected</span>
           </div>
+
+          <button id="logout-button" class="text-button">Sign out</button>
         </div>
 
-        <button id="logout-button" class="secondary">Sign out</button>
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Tracked emails</span>
+            <strong id="total-tracked">0</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Emails opened</span>
+            <strong id="opened-emails">0</strong>
+          </article>
+
+          <article class="stat-card">
+            <span>Total opens</span>
+            <strong id="total-opens">0</strong>
+          </article>
+        </div>
+
+        <section class="activity-section">
+          <div class="section-header">
+            <h2>Recent activity</h2>
+            <span>Latest events</span>
+          </div>
+
+          <div id="activity-list" class="activity-list"></div>
+
+          <p id="empty-state" class="empty-state" hidden>
+            No tracking activity yet. Send a tracked email to get started.
+          </p>
+        </section>
       </section>
 
       <p id="status-message" role="status"></p>
