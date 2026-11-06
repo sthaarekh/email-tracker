@@ -65,7 +65,7 @@ export const markEmailSent = async (req, res) => {
   }
 
   if (
-    gmailThreadId != null &&
+    gmailThreadId !== null &&
     (typeof gmailThreadId !== "string" || gmailThreadId.length > 256)
   ) {
     return res.status(400).json({
@@ -250,7 +250,7 @@ export const getTrackingActivity = async (req, res) => {
       openedAt: event.openedAt,
       classification: event.classification,
     }));
-    
+
   return res.status(200).json({
     success: true,
     data: {

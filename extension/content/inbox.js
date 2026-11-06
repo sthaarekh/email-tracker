@@ -21,7 +21,6 @@
     });
   }
 
-
   function getThreadId(row) {
     return (
       row.getAttribute("data-legacy-thread-id") ||
@@ -55,8 +54,9 @@
     rows.forEach((row) => {
       const threadId = getThreadId(row);
 
-      if (!threadId) 
-        {return;}
+      if (!threadId) {
+        return;
+      }
 
       const email = trackedEmails.get(threadId);
 

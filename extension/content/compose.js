@@ -152,7 +152,9 @@ function extractThreadIdFromToast(toast) {
 
   // "#thread-a:r6407043903080063082" -> "6407043903080063082"
   const m = param.match(/(\d{10,})$/);
-  if (!m) return null;
+  if (!m) {
+    return null;
+  }
 
   try {
     return BigInt(m[1]).toString(16);
@@ -168,12 +170,12 @@ function observeSendSuccess() {
     const sentAlert = Array.from(alerts).find((a) =>
       /message sent/i.test(a.textContent || "")
     );
-    if (!sentAlert || pendingSends.length === 0) 
-      {return;}
+    if (!sentAlert || pendingSends.length === 0) {
+      return;
+    }
 
     const pending = pendingSends.shift();
     const gmailThreadId = extractThreadIdFromToast(sentAlert);
-
 
     sendBackgroundMessage({
       type: "MARK_EMAIL_SENT",
@@ -182,7 +184,7 @@ function observeSendSuccess() {
     }).catch((error) => {
       console.error("Could not update sent status:", error);
     });
-  }); 
+  });
 
   observer.observe(document.body, {
     childList: true,
@@ -223,4 +225,4 @@ function setupCompose(compose) {
 window.EmailTrackerCompose = {
   setupCompose,
   observeSendSuccess,
-}
+};
