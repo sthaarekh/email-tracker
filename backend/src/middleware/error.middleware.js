@@ -1,6 +1,6 @@
 import { env } from "../config/env.js";
 
-const errorHandler = (error, _req, res, _next) => {
+const errorHandler = (error, _req, res) => {
   let statusCode = error.statusCode || error.status || 500;
 
   if (error.code === 11000) {
