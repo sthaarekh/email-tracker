@@ -78,9 +78,12 @@ async function loadDashboard() {
     const summary = result?.summary || {};
     const activity = result?.activity || [];
 
-    document.getElementById("total-tracked").textContent = summary.totalTracked ?? 0;
-    document.getElementById("opened-emails").textContent = summary.openedEmails ?? 0;
-    document.getElementById("total-opens").textContent = summary.totalOpens ?? 0;
+    document.getElementById("total-tracked").textContent =
+      summary.totalTracked ?? 0;
+    document.getElementById("opened-emails").textContent =
+      summary.openedEmails ?? 0;
+    document.getElementById("total-opens").textContent =
+      summary.totalOpens ?? 0;
 
     activityList.replaceChildren();
 
