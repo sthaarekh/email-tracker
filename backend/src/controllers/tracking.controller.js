@@ -65,7 +65,7 @@ export const markEmailSent = async (req, res) => {
   }
 
   if (
-    gmailThreadId !== undefined &&
+    gmailThreadId != null &&
     (typeof gmailThreadId !== "string" || gmailThreadId.length > 256)
   ) {
     return res.status(400).json({
@@ -113,10 +113,14 @@ export const markEmailSent = async (req, res) => {
 export const getTrackedEmails = async (req, res) => {
   const emails = await TrackedEmail.find({
     user: req.user._id,
+    status: "sent",
   })
-    .sort({ createdAt: -1 })
-    .limit(50)
-    .select("-trackingId -recipientEmail");
+    .sort({ sentAt: -1 })
+    .limit(100)
+    .select(
+      "_id subject gmailThreadId status openCount lastOpenedAt sentAt createdAt"
+    )
+    .lean();
 
   return res.status(200).json({
     success: true,
@@ -182,5 +186,125 @@ export const trackingPixel = (req, res) => {
         console.error("Tracking event recording failed:", error);
       }
     );
+  });
+};
+
+export const getTrackingActivity = async (req, res) => {
+  const userId = req.user._id;
+
+  const [emails, events, totalTracked, openedEmails, totals] =
+    await Promise.all([
+      TrackedEmail.find({
+        user: userId,
+        status: "sent",
+      })
+        .sort({ sentAt: -1 })
+        .limit(20)
+        .select(
+          "_id subject recipientEmail openCount lastOpenedAt sentAt gmailThreadId"
+        )
+        .lean(),
+
+      OpenEvent.find()
+        .sort({ openedAt: -1 })
+        .limit(50)
+        .select("trackedEmail openedAt classification")
+        .populate({
+          path: "trackedEmail",
+          match: { user: userId, status: "sent" },
+          select: "_id subject",
+        })
+        .lean(),
+
+      TrackedEmail.countDocuments({
+        user: userId,
+        status: "sent",
+      }),
+
+      TrackedEmail.countDocuments({
+        user: userId,
+        status: "sent",
+        openCount: { $gt: 0 },
+      }),
+
+      TrackedEmail.aggregate([
+        {
+          $match: {
+            user: userId,
+            status: "sent",
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalOpens: { $sum: "$openCount" },
+          },
+        },
+      ]),
+    ]);
+
+  const activity = events
+    .filter((event) => event.trackedEmail)
+    .map((event) => ({
+      email: event.trackedEmail,
+      openedAt: event.openedAt,
+      classification: event.classification,
+    }));
+    
+  return res.status(200).json({
+    success: true,
+    data: {
+      emails,
+      activity,
+      summary: {
+        totalTracked,
+        openedEmails,
+        totalOpens: totals[0]?.totalOpens || 0,
+      },
+    },
+  });
+};
+
+export const linkGmailThread = async (req, res) => {
+  const { id } = req.params;
+  const { gmailThreadId } = req.body;
+
+  if (
+    typeof gmailThreadId !== "string" ||
+    !/^[a-zA-Z0-9_-]{1,256}$/.test(gmailThreadId)
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid Gmail thread ID.",
+    });
+  }
+
+  const email = await TrackedEmail.findOneAndUpdate(
+    {
+      _id: id,
+      user: req.user._id,
+      status: "sent",
+    },
+    {
+      $set: { gmailThreadId },
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!email) {
+    return res.status(404).json({
+      success: false,
+      message: "Tracked email not found.",
+    });
+  }
+
+  return res.json({
+    success: true,
+    data: {
+      id: email._id,
+      gmailThreadId: email.gmailThreadId,
+    },
   });
 };
