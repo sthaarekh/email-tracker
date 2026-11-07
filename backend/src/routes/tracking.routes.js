@@ -11,6 +11,7 @@ import {
   trackingPixel,
   getTrackingActivity,
   linkGmailThread,
+  markSelfView
 } from "../controllers/tracking.controller.js";
 
 const router = Router();
@@ -20,6 +21,8 @@ router.get("/t/:trackingId.gif", trackingPixel);
 
 // Protected endpoints: extension must authenticate.
 router.post("/emails", authenticate, asyncHandler(createTrackedEmail));
+
+router.post("/emails/self-view", authenticate, asyncHandler(markSelfView));
 
 router.patch("/emails/:id/sent", authenticate, asyncHandler(markEmailSent));
 
