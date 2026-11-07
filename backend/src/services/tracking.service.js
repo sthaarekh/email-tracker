@@ -7,7 +7,9 @@ export const recordOpenEvent = async (trackingId, userAgent) => {
     status: "sent",
   }).select("_id sentAt selfViewUntil");
 
-  if (!trackedEmail) return;
+  if (!trackedEmail) {
+    return;
+  }
 
   const openedAt = new Date();
 
@@ -27,7 +29,9 @@ export const recordOpenEvent = async (trackingId, userAgent) => {
   });
 
   // Only genuine opens count
-  if (classification !== "unclassified") return;
+  if (classification !== "unclassified") {
+    return;
+  }
 
   await TrackedEmail.updateOne(
     { _id: trackedEmail._id },

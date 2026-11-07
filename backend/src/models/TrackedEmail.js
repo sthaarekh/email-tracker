@@ -41,9 +41,9 @@ const trackedEmailSchema = new mongoose.Schema(
       default: "draft",
     },
 
-    selfViewUntil: { 
-      type: Date, 
-      default: null 
+    selfViewUntil: {
+      type: Date,
+      default: null,
     },
 
     sentAt: {

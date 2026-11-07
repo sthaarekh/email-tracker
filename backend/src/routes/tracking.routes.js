@@ -11,7 +11,7 @@ import {
   trackingPixel,
   getTrackingActivity,
   linkGmailThread,
-  markSelfView
+  markSelfView,
 } from "../controllers/tracking.controller.js";
 
 const router = Router();

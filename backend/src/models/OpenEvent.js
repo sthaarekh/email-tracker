@@ -22,7 +22,13 @@ const openEventSchema = new mongoose.Schema(
 
     classification: {
       type: String,
-      enum: ["unclassified", "possible_proxy", "possible_scanner", "sender", "early_open"],
+      enum: [
+        "unclassified",
+        "possible_proxy",
+        "possible_scanner",
+        "sender",
+        "early_open",
+      ],
       default: "unclassified",
     },
   },

@@ -137,7 +137,9 @@ export const markSelfView = async (req, res) => {
     typeof trackingId !== "string" ||
     !/^[A-Za-z0-9_-]{32}$/.test(trackingId)
   ) {
-    return res.status(400).json({ success: false, message: "Invalid tracking ID." });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid tracking ID." });
   }
 
   // Only the owner can mark their own email, so a recipient with the extension has no effect
@@ -148,7 +150,9 @@ export const markSelfView = async (req, res) => {
   ).select("_id");
 
   if (!email) {
-    return res.status(404).json({ success: false, message: "Tracked email not found." });
+    return res
+      .status(404)
+      .json({ success: false, message: "Tracked email not found." });
   }
 
   // If the pixel hit arrived before this call, reclassify it and undo the count
