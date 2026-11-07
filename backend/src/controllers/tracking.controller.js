@@ -130,6 +130,51 @@ export const getTrackedEmails = async (req, res) => {
   });
 };
 
+export const markSelfView = async (req, res) => {
+  const { trackingId } = req.body;
+
+  if (
+    typeof trackingId !== "string" ||
+    !/^[A-Za-z0-9_-]{32}$/.test(trackingId)
+  ) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid tracking ID." });
+  }
+
+  // Only the owner can mark their own email, so a recipient with the extension has no effect
+  const email = await TrackedEmail.findOneAndUpdate(
+    { trackingId, user: req.user._id, status: "sent" },
+    { $set: { selfViewUntil: new Date(Date.now() + 20_000) } },
+    { new: true }
+  ).select("_id");
+
+  if (!email) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Tracked email not found." });
+  }
+
+  // If the pixel hit arrived before this call, reclassify it and undo the count
+  const result = await OpenEvent.updateMany(
+    {
+      trackedEmail: email._id,
+      classification: "unclassified",
+      openedAt: { $gte: new Date(Date.now() - 10_000) },
+    },
+    { $set: { classification: "sender" } }
+  );
+
+  if (result.modifiedCount > 0) {
+    await TrackedEmail.updateOne(
+      { _id: email._id, openCount: { $gte: result.modifiedCount } },
+      { $inc: { openCount: -result.modifiedCount } }
+    );
+  }
+
+  return res.status(200).json({ success: true });
+};
+
 export const getTrackingEvents = async (req, res) => {
   if (!mongoose.isObjectIdOrHexString(req.params.id)) {
     return res.status(400).json({
